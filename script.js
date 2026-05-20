@@ -2,7 +2,8 @@ const GAME_DURATION = 60;
 const ITEM_SIZE = 50;
 const BOAT_WIDTH = 208;
 const MOBILE_BOAT_WIDTH = 190;
-const BOAT_EDGE_OVERFLOW = 18;
+const DESKTOP_BOAT_EDGE_OVERFLOW = 18;
+const MOBILE_BOAT_EDGE_OVERFLOW = 38;
 const visualAssets = {
   background: "assets/bg.jpg",
   boat: "assets/boat.png",
@@ -77,24 +78,10 @@ const state = {
   timerAccumulator: 0,
 };
 
-preloadVisualAsset(visualAssets.background, (asset) => {
-  document.documentElement.style.setProperty("--stage-bg-image", `url("${asset}")`);
-});
-preloadVisualAsset(visualAssets.boat, (asset) => {
-  document.documentElement.style.setProperty("--boat-image", `url("${asset}")`);
-  boat.classList.add("has-image");
-});
-preloadVisualAsset(visualAssets.startButton, (asset) => {
-  document.documentElement.style.setProperty("--start-button-image", `url("${asset}")`);
-  startButton.classList.add("has-image");
-});
-preloadVisualAsset(visualAssets.rules, (asset) => {
-  document.documentElement.style.setProperty("--rules-image", `url("${asset}")`);
-  rulesBoard.classList.add("has-image");
-});
 preloadAssets();
 setBoatByRatio(0.5);
 renderHud();
+initializeStage();
 
 startButton.addEventListener("click", startGame);
 restartButton.addEventListener("click", startGame);
@@ -138,10 +125,46 @@ function preloadAssets() {
   });
 }
 
-function preloadVisualAsset(path, onLoad) {
-  const image = new Image();
-  image.onload = () => onLoad(path);
-  image.src = path;
+function initializeStage() {
+  const criticalAssets = [
+    preloadVisualAsset(visualAssets.background).then((asset) => {
+      if (asset) {
+        document.documentElement.style.setProperty("--stage-bg-image", `url("${asset}")`);
+      }
+    }),
+    preloadVisualAsset(visualAssets.boat).then((asset) => {
+      if (asset) {
+        document.documentElement.style.setProperty("--boat-image", `url("${asset}")`);
+        boat.classList.add("has-image");
+      }
+    }),
+    preloadVisualAsset(visualAssets.startButton).then((asset) => {
+      if (asset) {
+        document.documentElement.style.setProperty("--start-button-image", `url("${asset}")`);
+        startButton.classList.add("has-image");
+      }
+    }),
+    preloadVisualAsset(visualAssets.rules).then((asset) => {
+      if (asset) {
+        document.documentElement.style.setProperty("--rules-image", `url("${asset}")`);
+        rulesBoard.classList.add("has-image");
+      }
+    }),
+  ];
+
+  Promise.allSettled(criticalAssets).finally(() => {
+    stage.classList.remove("is-loading");
+    stage.classList.add("is-ready");
+  });
+}
+
+function preloadVisualAsset(path) {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = () => resolve(path);
+    image.onerror = () => resolve("");
+    image.src = path;
+  });
 }
 
 function startGame() {
@@ -198,8 +221,9 @@ function updateBoat(delta) {
   const trackWidth = boatTrack.clientWidth;
   const boatWidth = getBoatWidth();
   const moveSpeed = Math.max(280, trackWidth * 0.9);
-  const minX = -BOAT_EDGE_OVERFLOW;
-  const maxX = trackWidth - boatWidth + BOAT_EDGE_OVERFLOW;
+  const edgeOverflow = getBoatEdgeOverflow();
+  const minX = -edgeOverflow;
+  const maxX = trackWidth - boatWidth + edgeOverflow;
   let direction = 0;
 
   if (state.keys.left) {
@@ -354,15 +378,17 @@ function handlePointerMove(event) {
 function setBoatByRatio(ratio) {
   const trackWidth = boatTrack.clientWidth;
   const boatWidth = getBoatWidth();
-  const minX = -BOAT_EDGE_OVERFLOW;
-  const maxX = trackWidth - boatWidth + BOAT_EDGE_OVERFLOW;
+  const edgeOverflow = getBoatEdgeOverflow();
+  const minX = -edgeOverflow;
+  const maxX = trackWidth - boatWidth + edgeOverflow;
   state.boatX = clamp(ratio * trackWidth - boatWidth / 2, minX, maxX);
   boat.style.left = `${state.boatX}px`;
 }
 
 function getBoatRatio() {
-  const movableWidth = boatTrack.clientWidth - getBoatWidth() + BOAT_EDGE_OVERFLOW * 2;
-  return movableWidth > 0 ? (state.boatX + BOAT_EDGE_OVERFLOW) / movableWidth : 0.5;
+  const edgeOverflow = getBoatEdgeOverflow();
+  const movableWidth = boatTrack.clientWidth - getBoatWidth() + edgeOverflow * 2;
+  return movableWidth > 0 ? (state.boatX + edgeOverflow) / movableWidth : 0.5;
 }
 
 function getBoatWidth() {
@@ -371,6 +397,10 @@ function getBoatWidth() {
 
 function getBoatHeight() {
   return window.innerWidth <= 430 ? 94 : 102;
+}
+
+function getBoatEdgeOverflow() {
+  return window.innerWidth <= 430 ? MOBILE_BOAT_EDGE_OVERFLOW : DESKTOP_BOAT_EDGE_OVERFLOW;
 }
 
 function getResultText(score) {

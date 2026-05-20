@@ -47,6 +47,15 @@ body {
   touch-action: none;
 }
 
+.game-stage.is-loading {
+  opacity: 0;
+}
+
+.game-stage.is-ready {
+  opacity: 1;
+  transition: opacity 180ms ease;
+}
+
 .stage-bg-fog {
   display: none;
 }
@@ -313,6 +322,8 @@ body {
 
 .boat-track {
   position: relative;
+  width: calc(100% + 28px);
+  margin-left: -14px;
   height: 122px;
 }
 
@@ -555,6 +566,8 @@ body {
   }
 
   .boat-track {
+    width: calc(100% + 36px);
+    margin-left: -18px;
     height: 112px;
   }
 
