@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>端午接物小游戏</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="mobile-page">
+    <section class="game-stage" id="gameStage">
+
+
+      <header class="top-bar">
+      
+
+        <div class="hud hidden" id="hud">
+          <div class="hud-chip">
+            <span>倒计时</span>
+            <strong id="timeValue">60</strong>
+          </div>
+          <div class="hud-chip">
+            <span>分数</span>
+            <strong id="scoreValue">0</strong>
+          </div>
+        </div>
+      </header>
+
+      <div class="item-layer" id="itemLayer"></div>
+
+      <div class="start-scene" id="startScene">
+        <button class="start-button" id="startButton" type="button">
+          <span>开始游戏</span>
+        </button>
+      </div>
+
+      <div class="result-overlay hidden" id="resultOverlay">
+        <div class="result-panel">
+          <h2>挑战结束</h2>
+          <p class="result-score">本次得分 <strong id="finalScore">0</strong></p>
+          <p class="result-text" id="resultText">再来一局，冲击更高分。</p>
+          <button class="restart-button" id="restartButton" type="button">再玩一次</button>
+        </div>
+      </div>
+
+      <div class="bottom-stage">
+  
+        <div class="boat-track" id="boatTrack">
+          <div class="boat" id="boat" aria-label="粽叶小船"></div>
+        </div>
+
+        <footer class="rules-board" id="rulesBoard">
+          <div class="rules-fallback">
+            <div class="rule-item"><span class="legend-icon red-bean"></span><span>红豆<br />+10分</span></div>
+            <div class="rule-item"><span class="legend-icon jujube"></span><span>红枣<br />+10分</span></div>
+            <div class="rule-item"><span class="legend-icon rice"></span><span>糯米<br />+10分</span></div>
+            <div class="rule-item"><span class="legend-icon banana"></span><span>香蕉皮<br />-10分</span></div>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
