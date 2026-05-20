@@ -16,6 +16,7 @@ html,
 body {
   margin: 0;
   min-height: 100%;
+  overflow-x: hidden;
   font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
   background: var(--page-bg);
   color: var(--ink);
@@ -32,6 +33,7 @@ body {
   display: flex;
   justify-content: center;
   padding: 0;
+  overflow-x: hidden;
 }
 
 .game-stage {
@@ -303,7 +305,7 @@ body {
   right: 0;
   bottom: 0;
   z-index: 4;
-  padding: 0 14px 14px;
+  padding: 0 0 14px;
 }
 
 .shore-copy {
@@ -322,8 +324,7 @@ body {
 
 .boat-track {
   position: relative;
-  width: calc(100% + 28px);
-  margin-left: -14px;
+  width: 100%;
   height: 122px;
 }
 
@@ -333,7 +334,6 @@ body {
   bottom: 0;
   width: 208px;
   height: 102px;
-  margin-left: 0;
   border-radius: 48% 52% 30% 30%;
   background:
     var(--boat-image),
@@ -343,6 +343,7 @@ body {
   background-position: center;
   box-shadow: 0 14px 28px rgba(84, 73, 38, 0.16);
   transform-origin: center bottom;
+  transform: translateX(0);
 }
 
 .boat.has-image {
@@ -390,6 +391,7 @@ body {
 
 .rules-board {
   position: relative;
+  margin: 0 14px;
   min-height: 104px;
   border-radius: 20px;
   background:
@@ -566,15 +568,12 @@ body {
   }
 
   .boat-track {
-    width: calc(100% + 36px);
-    margin-left: -18px;
     height: 112px;
   }
 
   .boat {
     width: 190px;
     height: 94px;
-    margin-left: -95px;
   }
 
   .rules-fallback {
